@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
@@ -14,16 +14,19 @@ import {
   Checkbox,
   InputAdornment,
   IconButton,
+  CircularProgress
 } from '@material-ui/core';
-import { makeStyles } from '@material-ui/core/styles';
 import { LockOpen, Visibility, VisibilityOff } from '@material-ui/icons';
+import { makeStyles } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
+import { useSnackbar } from 'notistack';
 
 import Copyright from '../../components/utils/copyright';
 
-// import { isEmpty, isValidEmail } from '../../utils/validatons';
-
-import api from '../../services/api';
 import * as userActions from '../../store/auth/actions';
+import api from '../../services/api';
+
+// import { isEmpty, isValidEmail } from '../../utils/validatons';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,26 +43,35 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(2),
   },
-  submit: {
-    margin: theme.spacing(1.5, 0, 2),
+  circularProgress: {
+    color: green[500],
+    position: 'absolute',
   },
-  // Se houver footer,
-  // padding: theme.spacing(6)
+  // padding: theme.spacing(6)   *Se houver footer,
 }));
 
 export default function SignIn() {
   const classes = useStyles();
+  const dispatch = useDispatch();
+  const timer = useRef();
+  const {enqueueSnackbar} = useSnackbar();
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-
-  const dispatch = useDispatch();
+  const [loading, setLoading] = useState(false);
 
   async function handleSubmit() {
     try {
+      if (!loading) {
+        setLoading(true);
+        timer.current = window.setTimeout(() => {
+          setLoading(false);
+        }, 2000);
+      }
+
       const response = await api.post('/login', {
         email,
         password,
@@ -68,8 +80,10 @@ export default function SignIn() {
       if (response.data.token) {
         dispatch(userActions.login(response.data));
       }
+
+      enqueueSnackbar(response.data.message, {variant: 'success'});
     } catch (error) {
-      console.log(error);
+      enqueueSnackbar('Por favor, confira os dados inseridos e tente novamente.', {variant: 'warning'});
     }
   }
 
@@ -93,8 +107,7 @@ export default function SignIn() {
             margin="normal"
             fullWidth
             id="email"
-            // label="Email Address"
-            name="email"
+            label="Email Address"
             autoComplete="email"
             autoFocus
             onChange={(e) => setEmail(e.target.value)}
@@ -106,8 +119,7 @@ export default function SignIn() {
             variant="outlined"
             margin="normal"
             fullWidth
-            name="password" // TODO Visibility     VisibilityOff
-            // label="Password"
+            label="Password"
             id="password"
             InputProps={{
               endAdornment: (
@@ -129,30 +141,34 @@ export default function SignIn() {
           />
           <FormControlLabel
             control={<Checkbox value="remember" color="primary" />}
-            label="Remember me"
+            label="Remember me"  // TODO 
           />
-          <Button
+            <Button
             type="button"
             fullWidth
             variant="contained"
             color="primary"
-            className={classes.submit}
+            className={classes.wrapper}
             onClick={() => handleSubmit()}
-          >
-            Sign In
-          </Button>
-          <Grid container>
+            >
+              Sign In
+              {loading && 
+                <CircularProgress size={24} className={classes.circularProgress} />}
+            </Button>
+          <div className={classes.form}>
+            <Grid container>
             <Grid item xs>
-              <Link to="/change-passw" variant="body2">
+              <Link to="/change-passw">
                 Change your password?
               </Link>
             </Grid>
             <Grid item>
-              <Link to="/sign-up" variant="body2">
+              <Link to="/sign-up">
                 Sign Up
               </Link>
             </Grid>
           </Grid>
+          </div>   
         </form>
       </div>
       <Box mt={6}>
