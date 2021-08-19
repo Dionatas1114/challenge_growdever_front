@@ -13,14 +13,10 @@ import {
   MenuItem,
   Menu,
 } from '@material-ui/core';
-
-import MenuIcon from '@material-ui/icons/Menu'; //! icons
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import MoreIcon from '@material-ui/icons/MoreVert';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-
-import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
+import { ChevronLeft, MoreVert, ExitToApp } from '@material-ui/icons';
+import MenuIcon from '@material-ui/icons/Menu';
+import clsx from 'clsx';
 
 import CustomTip from '../../components/utils/customTooltip';
 import ProfileIcon from '../../components/utils/profileIcons';
@@ -140,12 +136,12 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Dashboard() {
   const classes = useStyles();
+  const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
 
-  const dispatch = useDispatch();
   const logout = () => dispatch(userActions.logout());
 
   const profileIconButton = (
@@ -162,7 +158,7 @@ export default function Dashboard() {
 
   const logoutIconButton = (
     <IconButton aria-label="logout" onClick={logout} color="inherit">
-      <ExitToAppIcon fontSize="large" />
+      <ExitToApp fontSize="large" />
     </IconButton>
   );
 
@@ -233,7 +229,7 @@ export default function Dashboard() {
               onClick={(e) => setMobileMoreAnchorEl(e.currentTarget)}
               color="inherit"
             >
-              <MoreIcon />
+              <MoreVert />
             </IconButton>
           </div>
         </Toolbar>
@@ -249,7 +245,7 @@ export default function Dashboard() {
       >
         <div className={classes.toolbarIcon}>
           <IconButton onClick={() => setOpen(false)}>
-            <ChevronLeftIcon />
+            <ChevronLeft />
           </IconButton>
         </div>
         <Divider />
