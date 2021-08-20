@@ -16,6 +16,7 @@ import {
   IconButton,
   CircularProgress
 } from '@material-ui/core';
+
 import { LockOpen, Visibility, VisibilityOff } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
@@ -43,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(2),
+    marginTop: theme.spacing(1),
   },
   circularProgress: {
     color: green[500],
@@ -61,14 +62,14 @@ export default function SignIn() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
 
   async function handleSubmit() {
     try {
-      if (!loading) {
-        setLoading(true);
+      if (!submitLoading) {
+        setSubmitLoading(true);
         timer.current = window.setTimeout(() => {
-          setLoading(false);
+          setSubmitLoading(false);
         }, 2000);
       }
 
@@ -152,7 +153,7 @@ export default function SignIn() {
             onClick={() => handleSubmit()}
             >
               Sign In
-              {loading && 
+              {submitLoading && 
                 <CircularProgress size={24} className={classes.circularProgress} />}
             </Button>
           <div className={classes.form}>

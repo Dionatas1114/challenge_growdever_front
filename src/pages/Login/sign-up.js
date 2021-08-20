@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link, useHistory } from 'react-router-dom';
 import {
   Avatar,
@@ -15,10 +15,13 @@ import {
   Select,
   InputAdornment,
   IconButton,
+  CircularProgress
 } from '@material-ui/core';
 
 import { PersonAdd, Visibility, VisibilityOff } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
+import { useSnackbar } from 'notistack';
 
 import Copyright from '../../components/utils/copyright';
 // import { renderErrorMsg } from '../../utils/toasts/validationMessages';
@@ -27,7 +30,7 @@ import api from '../../services/api';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
-    marginTop: theme.spacing(8),
+    marginTop: theme.spacing(7),
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',
@@ -40,20 +43,26 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(3),
+    marginTop: theme.spacing(2),
   },
   formControl: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing(0),
   },
   submit: {
-    margin: theme.spacing(2, 0, 2),
+    margin: theme.spacing(2, 0, 1),
+  },
+  circularProgress: {
+    color: green[500],
+    position: 'absolute',
   },
 }));
 
 export default function SignUp() {
   const classes = useStyles();
   const history = useHistory();
+  const timer = useRef();
+  const {enqueueSnackbar} = useSnackbar();
 
   const [name, setFullName] = useState('');
   const [email, setEmail] = useState('');
@@ -61,27 +70,32 @@ export default function SignUp() {
   const [type, setUserType] = useState(0);
   const [users, setUsers] = useState([]);
   const [showPassword, setShowPassword] = useState(false);
+  const [submitLoading, setSubmitLoading] = useState(false);
+  // const [isValidInputs, setIsValidInputs] = useState(false);
 
-  // const userData = useSelector((state) => state.auth);
+  const toSignIn = () => history.push('/sign-in');
 
-  //! validations
+    //! validations
+  // const isValidInputs = false;
   /* 12 character or more */
   // const fullNamevalid = fullName.length > 11;
 
   //! Message validations
   // const errorMessage = renderErrorMsg();
-
-  function handleSuccessInsertMessage() {
-    alert('sucesso!');
-  }
-
-  const toSignIn = () => history.push('/sign-in');
+  // const userData = useSelector((state) => state.auth);
 
   async function handleCreateNewUser(e) {
     // if (fullNamevalid) {
     e.preventDefault();
     try {
-      const response = await api
+      if (!submitLoading) {
+        setSubmitLoading(true);
+        timer.current = window.setTimeout(() => {
+          setSubmitLoading(false);
+        }, 2000);
+      }
+
+      await api
         .post('/users', {
           email,
           name,
@@ -91,14 +105,15 @@ export default function SignUp() {
         .then((res) => {
           return setUsers(
             [...users, res.data.user],
-            console.log(response),
-            handleSuccessInsertMessage(),
+            enqueueSnackbar(res.data.message, {variant: 'success'}),
             toSignIn()
           );
         })
-        .catch((error) => alert(error.response?.data?.message));
+        .catch((error) =>
+          enqueueSnackbar(error.response.data.message, {variant: 'warning'})
+        );
     } catch (error) {
-      alert(error.response?.data?.message);
+      throw e;
     }
     setFullName('');
     setEmail('');
@@ -191,7 +206,6 @@ export default function SignUp() {
                   label="User Type"
                   required
                 >
-                  {/* 1=Admin, 0=Growdever */}
                   <MenuItem value={0}>Growdever</MenuItem>
                   <MenuItem value={1}>Admin</MenuItem>
                 </Select>
@@ -204,8 +218,11 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
+            // disabled={!isValidInputs}
           >
             Sign Up
+            {submitLoading && 
+              <CircularProgress size={24} className={classes.circularProgress} />}
           </Button>
           <Grid container>
             <Grid item xs>
