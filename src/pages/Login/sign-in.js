@@ -81,7 +81,7 @@ export default function SignIn() {
       if (!submitLoading) {
         setSubmitLoading(true);
         timer.current = window.setTimeout(() => {
-          handleChangeBoolean('submitLoading');
+          setSubmitLoading(false);
         }, 2000);
       }
 
