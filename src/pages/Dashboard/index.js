@@ -214,10 +214,10 @@ export default function Dashboard() {
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <CustomTip title="Sign-In" placement="botton">
+            <CustomTip title="Sign-In" placement="bottom">
               {profileIconButton}
             </CustomTip>
-            <CustomTip title="Logout" placement="botton">
+            <CustomTip title="Logout" placement="bottom">
               {logoutIconButton}
             </CustomTip>
           </div>

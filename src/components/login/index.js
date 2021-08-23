@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-// import InputMask from 'react-input-mask';
 // import Input from '@material-ui/core/Input';
 
 import api from '../../services/api';
