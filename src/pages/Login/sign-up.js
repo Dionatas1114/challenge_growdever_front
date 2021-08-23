@@ -24,9 +24,9 @@ import { green } from '@material-ui/core/colors';
 import { useSnackbar } from 'notistack';
 
 import Copyright from '../../components/utils/copyright';
-// import { renderErrorMsg } from '../../utils/toasts/validationMessages';
 
 import api from '../../services/api';
+  // const userData = useSelector((state) => state.auth);
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -64,28 +64,27 @@ export default function SignUp() {
   const timer = useRef();
   const {enqueueSnackbar} = useSnackbar();
 
-  const [name, setFullName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [type, setUserType] = useState(0);
-  const [users, setUsers] = useState([]);
-  const [showPassword, setShowPassword] = useState(false);
+  const [values, setValues] = useState({
+    name: '',
+    email: '',
+    password: '',
+    type: 0,
+    users: [],
+    showPassword: false,
+  });
   const [submitLoading, setSubmitLoading] = useState(false);
-  // const [isValidInputs, setIsValidInputs] = useState(false);
+
+  const handleChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const handleChangeBoolean = (prop) => () => {
+    setValues({ ...values, [prop]: !values[prop] });
+  };
 
   const toSignIn = () => history.push('/sign-in');
 
-    //! validations
-  // const isValidInputs = false;
-  /* 12 character or more */
-  // const fullNamevalid = fullName.length > 11;
-
-  //! Message validations
-  // const errorMessage = renderErrorMsg();
-  // const userData = useSelector((state) => state.auth);
-
   async function handleCreateNewUser(e) {
-    // if (fullNamevalid) {
     e.preventDefault();
     try {
       if (!submitLoading) {
@@ -95,16 +94,16 @@ export default function SignUp() {
         }, 2000);
       }
 
+      const { email, name, type, password } = values;
+      const user = { email, name, type, password };
+
       await api
-        .post('/users', {
-          email,
-          name,
-          type,
-          password,
-        })
+        .post('/users', 
+          user
+        )
         .then((res) => {
-          return setUsers(
-            [...users, res.data.user],
+          return setValues(
+            [...values.users, res.data.user],
             enqueueSnackbar(res.data.message, {variant: 'success'}),
             toSignIn()
           );
@@ -115,10 +114,6 @@ export default function SignUp() {
     } catch (error) {
       throw e;
     }
-    setFullName('');
-    setEmail('');
-    setUserType('');
-    setPassword('');
   }
 
   return (
@@ -134,7 +129,6 @@ export default function SignUp() {
         <form
           className={classes.form}
           onSubmit={handleCreateNewUser}
-          noValidate
         >
           <Grid container spacing={2}>
             <Grid item xs={12}>
@@ -146,12 +140,11 @@ export default function SignUp() {
                 required
                 fullWidth
                 multiline
-                rowsMax={2}
+                maxRows={2}
                 autoFocus
                 autoComplete="fname"
-                value={name}
-                onChange={(e) => setFullName(e.target.value)}
-                // error={!fullNamevalid}
+                value={values.name}
+                onChange={handleChange('name')}
               />
             </Grid>
             <Grid item xs={12}>
@@ -163,8 +156,8 @@ export default function SignUp() {
                 label="Email Address"
                 name="email"
                 autoComplete="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={values.email}
+                onChange={handleChange('email')}
               />
             </Grid>
             <Grid item xs={7}>
@@ -179,18 +172,18 @@ export default function SignUp() {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
-                        onClick={() => setShowPassword((e) => !e)}
+                        onClick={handleChangeBoolean('showPassword')}
                       >
-                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                        {values.showPassword ? <VisibilityOff /> : <Visibility />}
                       </IconButton>
                     </InputAdornment>
                   ),
                 }}
-                type={showPassword ? 'text' : 'password'}
+                type={values.showPassword ? 'text' : 'password'}
                 id="password"
                 autoComplete="current-password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                value={values.password}
+                onChange={handleChange('password')}
               />
             </Grid>
             <Grid item xs={5}>
@@ -201,8 +194,8 @@ export default function SignUp() {
                 <Select
                   labelId="demo-controlled-open-select-label"
                   id="demo-controlled-open-select"
-                  value={type}
-                  onChange={(e) => setUserType(e.target.value)}
+                  value={values.type}
+                  onChange={handleChange('type')}
                   label="User Type"
                   required
                 >
@@ -218,7 +211,6 @@ export default function SignUp() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            // disabled={!isValidInputs}
           >
             Sign Up
             {submitLoading && 
