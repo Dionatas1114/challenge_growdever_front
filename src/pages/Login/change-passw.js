@@ -106,7 +106,7 @@ export default function ChangePassw() {
         <Typography component="h1" variant="h5">
           Change Password
         </Typography>
-        <form className={classes.form} onSubmit={handleChangePassw} noValidate>
+        <form className={classes.form} onSubmit={handleChangePassw}>
           <TextField
             variant="outlined"
             margin="normal"

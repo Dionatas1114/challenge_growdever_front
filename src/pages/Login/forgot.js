@@ -48,6 +48,9 @@ const pass = '123';
 
 export default function SignIn() {
   const classes = useStyles();
+  const click = () => {
+    console.log('click');
+  }
 
   return (
     <Container component="main" maxWidth="xs">
@@ -59,7 +62,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h6">
           Forgot your password?
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -78,7 +81,7 @@ export default function SignIn() {
                 margin="normal"
                 fullWidth
                 name="password"
-                label={`${pass}`}
+                label={pass}
                 type="password"
                 id="password"
                 disabled
@@ -88,7 +91,7 @@ export default function SignIn() {
               <Button
                 variant="contained"
                 color="primary"
-                onClick={classes.copy}
+                onClick={click}
               >
                 Copy
               </Button>
@@ -100,7 +103,7 @@ export default function SignIn() {
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={classes.submit}
+            onClick={click}
           >
             Generate Temporary Password
           </Button>
