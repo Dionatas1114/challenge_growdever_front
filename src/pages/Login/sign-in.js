@@ -22,12 +22,13 @@ import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import { useSnackbar } from 'notistack';
 
-import Copyright from '../../components/utils/copyright';
-
-import * as userActions from '../../store/auth/actions';
 import api from '../../services/api';
+import * as userActions from '../../store/auth/actions';
+// isEmpty,
+// import { isValidEmail } from '../../utils/validations/validators';
+// import { TextMaskCustom } from '../../utils/masks/masks';
 
-// import { isEmpty, isValidEmail } from '../../utils/validatons';
+import Copyright from '../../components/utils/copyright';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -59,24 +60,36 @@ export default function SignIn() {
   const timer = useRef();
   const {enqueueSnackbar} = useSnackbar();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [values, setValues] = useState({
+    email: '',
+    password: '',
+    showPassword: false,
+  });
   const [submitLoading, setSubmitLoading] = useState(false);
 
-  async function handleSubmit() {
+  const handleChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const handleChangeBoolean = (prop) => () => {
+    setValues({ ...values, [prop]: !values[prop] });
+  };
+
+  const handleSubmit = async e => {
+    e.preventDefault();
     try {
       if (!submitLoading) {
         setSubmitLoading(true);
         timer.current = window.setTimeout(() => {
-          setSubmitLoading(false);
+          handleChangeBoolean('submitLoading');
         }, 2000);
       }
 
-      const response = await api.post('/login', {
-        email,
-        password,
-      });
+      const { email, password } = values;
+
+      const response = await api.post('/login', 
+        { email, password }
+      );
 
       if (response.data.token) {
         dispatch(userActions.login(response.data));
@@ -85,12 +98,8 @@ export default function SignIn() {
       enqueueSnackbar(response.data.message, {variant: 'success'});
     } catch (error) {
       enqueueSnackbar('Por favor, confira os dados inseridos e tente novamente.', {variant: 'warning'});
-    }
+    } 
   }
-
-  // console.log('isEmpty:', isEmpty('abcd')); // isEmpty: string is not empty and does not contain spaces
-  // console.log('isValidEmail:', isValidEmail('abc@11gmail.com')); // isValidEmail: email is valid
-  // console.log('isValidEmail:', isValidEmail('ab@c@11gmail.com')); // isValidEmail: email is invalid
 
   return (
     <Container component="main" maxWidth="xs">
@@ -102,7 +111,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
-        <form className={classes.form} noValidate>
+        <form className={classes.form} onSubmit={handleSubmit}>
           <TextField
             variant="outlined"
             margin="normal"
@@ -111,9 +120,10 @@ export default function SignIn() {
             label="Email Address"
             autoComplete="email"
             autoFocus
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleChange('email')}
             type="email"
-            value={email}
+            value={values.email}
+            // error={valid}
             required
           />
           <TextField
@@ -127,17 +137,17 @@ export default function SignIn() {
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => setShowPassword((e) => !e)}
+                    onClick={handleChangeBoolean('showPassword')}
                   >
-                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
-              ),
+              )
             }}
             autoComplete="current-password"
-            onChange={(e) => setPassword(e.target.value)}
-            type={showPassword ? 'text' : 'password'}
-            value={password}
+            onChange={handleChange('password')}
+            type={values.showPassword ? 'text' : 'password'}
+            value={values.password}
             required
           />
           <FormControlLabel
@@ -145,12 +155,11 @@ export default function SignIn() {
             label="Remember me"  // TODO 
           />
             <Button
-            type="button"
+            type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.wrapper}
-            onClick={() => handleSubmit()}
             >
               Sign In
               {submitLoading && 
