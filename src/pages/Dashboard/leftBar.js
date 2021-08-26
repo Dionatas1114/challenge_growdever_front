@@ -10,6 +10,7 @@ import SchoolIcon from '@material-ui/icons/School';
 import AssignmentIcon from '@material-ui/icons/Assignment';
 import EventIcon from '@material-ui/icons/Event';
 import LocalLibraryIcon from '@material-ui/icons/LocalLibrary';
+import CreditCardRoundedIcon from '@material-ui/icons/CreditCardRounded';
 import PhoneCallbackIcon from '@material-ui/icons/PhoneCallback';
 import SettingsIcon from '@material-ui/icons/Settings';
 
@@ -91,6 +92,14 @@ export const secondaryListItems = (
 
 export const configListItems = (
   <div>
+  <CustomTip title="Payment" placement="right">
+      <ListItem button to="/payment" component={Link}>
+        <ListItemIcon>
+          <CreditCardRoundedIcon />
+        </ListItemIcon>
+        <ListItemText primary="Payment" />
+      </ListItem>
+    </CustomTip>
     <CustomTip title="Contact us" placement="right">
       <ListItem button to="/contact-us" component={Link}>
         <ListItemIcon>
