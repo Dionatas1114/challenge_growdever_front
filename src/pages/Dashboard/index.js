@@ -22,7 +22,8 @@ import CustomTip from '../../components/utils/customTooltip';
 import ProfileIcon from '../../components/utils/profileIcons';
 
 import * as userActions from '../../store/auth/actions';
-import { mainListItems, secondaryListItems, configListItems } from './leftBar';
+
+import { firstListItems, secondListItems, thirdListItems } from './leftBar';
 import Home from '../Home';
 // import Image from '../../assets/images/universityBack.jpg';
 
@@ -72,7 +73,6 @@ const useStyles = makeStyles((theme) => ({
   },
   menuButton: {
     marginRight: theme.spacing(2),
-    // marginRight: 36,
   },
   title: {
     display: 'flex',
@@ -137,23 +137,53 @@ const useStyles = makeStyles((theme) => ({
 export default function Dashboard() {
   const classes = useStyles();
   const dispatch = useDispatch();
-  const [open, setOpen] = useState(false);
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
 
+  const [openLeftBar, setOpen] = useState(false);
+  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const openProfileMenu = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+
+  const handleOpenProfileMenu = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleCloseProfileMenu = () => {
+    setAnchorEl(null);
+  };
 
   const logout = () => dispatch(userActions.logout());
 
   const profileIconButton = (
-    <IconButton
+    <div>
+      <IconButton
       aria-label="redirect to Sign-In page"
-      to="/sign-in"
-      component={Link}
       color="inherit"
       size="small"
+      onClick={handleOpenProfileMenu}
     >
-      <ProfileIcon />
-    </IconButton>
+        <ProfileIcon />
+      </IconButton>
+      <Menu
+        id="menu-appbar"
+        anchorEl={anchorEl}
+        anchorOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        keepMounted
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'right',
+        }}
+        open={openProfileMenu}
+        onClose={handleCloseProfileMenu}
+      >
+        <MenuItem to='/change-passw' component={Link}>Change Password</MenuItem>
+        <MenuItem onClick={handleCloseProfileMenu}>Profile</MenuItem>
+      </Menu>
+    </div>
   );
 
   const logoutIconButton = (
@@ -174,9 +204,7 @@ export default function Dashboard() {
       onClose={() => setMobileMoreAnchorEl(null)}
     >
       <MenuItem>
-        <CustomTip title="Sign-In" placement="left">
           {profileIconButton}
-        </CustomTip>
       </MenuItem>
       <MenuItem>
         <CustomTip title="Logout" placement="left">
@@ -191,7 +219,7 @@ export default function Dashboard() {
       <CssBaseline />
       <AppBar
         position="absolute"
-        className={clsx(classes.appBar, open && classes.appBarShift)}
+        className={clsx(classes.appBar, openLeftBar && classes.appBarShift)}
       >
         <Toolbar className={classes.toolbar}>
           <IconButton
@@ -214,7 +242,7 @@ export default function Dashboard() {
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <CustomTip title="Sign-In" placement="bottom">
+            <CustomTip title="Profile" placement="bottom">
               {profileIconButton}
             </CustomTip>
             <CustomTip title="Logout" placement="bottom">
@@ -239,9 +267,9 @@ export default function Dashboard() {
       <Drawer
         variant="permanent"
         classes={{
-          paper: clsx(classes.drawerPaper, !open && classes.drawerPaperClose),
+          paper: clsx(classes.drawerPaper, !openLeftBar && classes.drawerPaperClose),
         }}
-        open={open}
+        open={openLeftBar}
       >
         <div className={classes.toolbarIcon}>
           <IconButton onClick={() => setOpen(false)}>
@@ -249,11 +277,11 @@ export default function Dashboard() {
           </IconButton>
         </div>
         <Divider />
-        <List>{mainListItems}</List>
+        <List>{firstListItems}</List>
         <Divider />
-        <List>{secondaryListItems}</List>
+        <List>{secondListItems}</List>
         <Divider />
-        <List>{configListItems}</List>
+        <List>{thirdListItems}</List>
       </Drawer>
       <Home />
     </div>

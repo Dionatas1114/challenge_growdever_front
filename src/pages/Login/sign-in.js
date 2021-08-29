@@ -120,9 +120,9 @@ export default function SignIn() {
             label="Email Address"
             autoComplete="email"
             autoFocus
-            onChange={handleChange('email')}
             type="email"
             value={values.email}
+            onChange={handleChange('email')}
             // error={valid}
             required
           />
@@ -145,9 +145,9 @@ export default function SignIn() {
               )
             }}
             autoComplete="current-password"
-            onChange={handleChange('password')}
             type={values.showPassword ? 'text' : 'password'}
             value={values.password}
+            onChange={handleChange('password')}
             required
           />
           <FormControlLabel
@@ -168,8 +168,8 @@ export default function SignIn() {
           <div className={classes.form}>
             <Grid container>
             <Grid item xs>
-              <Link to="/change-passw">
-                Change your password?
+              <Link to="/forgot">
+                Forgot password?
               </Link>
             </Grid>
             <Grid item>

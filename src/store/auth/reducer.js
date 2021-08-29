@@ -1,6 +1,6 @@
 const defaultState = null;
 
-export default function (state = defaultState, action) {
+export default (state = defaultState, action) => {
   switch (action.type) {
     case '@user/LOGIN':
       // action.data.user.name
