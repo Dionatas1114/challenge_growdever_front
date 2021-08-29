@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useRef } from 'react';
+// import { useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import {
   Avatar,
@@ -9,10 +10,15 @@ import {
   Box,
   Typography,
   Container,
+  CircularProgress
 } from '@material-ui/core';
 
 import { makeStyles } from '@material-ui/core/styles';
 import { VpnKey } from '@material-ui/icons';
+import { green } from '@material-ui/core/colors';
+import { useSnackbar } from 'notistack';
+
+import api from '../../services/api';
 
 import Copyright from '../../components/utils/copyright';
 
@@ -31,25 +37,42 @@ const useStyles = makeStyles((theme) => ({
   },
   form: {
     width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
-  generated: {
-    margin: theme.spacing(0, 0, 3),
-  },
-  copy: {
-    margin: theme.spacing(1.5, 0, 3),
+    marginTop: theme.spacing(4),
   },
   submit: {
-    margin: theme.spacing(0, 0, 3),
+    margin: theme.spacing(1, 0, 1),
+  },
+  circularProgress: {
+    color: green[500],
+    position: 'absolute',
   },
 }));
 
-const pass = '123';
-
 export default function SignIn() {
   const classes = useStyles();
-  const click = () => {
-    console.log('click');
+  const timer = useRef();
+  const {enqueueSnackbar} = useSnackbar();
+
+  const [email, setEmail] = useState('');
+  const [submitLoading, setSubmitLoading] = useState(false);
+
+  const handleSubmit = async e => {
+    e.preventDefault();
+    try {
+      if (!submitLoading) {
+        setSubmitLoading(true);
+        timer.current = window.setTimeout(() => {
+          setSubmitLoading(false);
+        }, 2000);
+      }
+
+      const response = await api.post('/forgot-email', 
+        { email }
+      );
+      enqueueSnackbar(response.data.message, {variant: 'success'});
+    } catch (error) {
+      enqueueSnackbar('Por favor, confira os dados inseridos e tente novamente.', {variant: 'warning'});
+    }
   }
 
   return (
@@ -62,7 +85,7 @@ export default function SignIn() {
         <Typography component="h1" variant="h6">
           Forgot your password?
         </Typography>
-        <form className={classes.form}>
+        <form className={classes.form} onSubmit={handleSubmit} noValidate>
           <TextField
             variant="outlined"
             margin="normal"
@@ -70,58 +93,38 @@ export default function SignIn() {
             fullWidth
             id="email"
             label="Email Address"
-            name="email"
+            type="email"
             autoComplete="email"
+            onChange={(e) => setEmail(e.target.value)}
+            value={email}
             autoFocus
           />
-          <Grid container>
-            <Grid item xs className={classes.generated}>
-              {/* WatchLater icon */}
-              <TextField
-                margin="normal"
-                fullWidth
-                name="password"
-                label={pass}
-                type="password"
-                id="password"
-                disabled
-              />
-            </Grid>
-            <Grid item className={classes.copy}>
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={click}
-              >
-                Copy
-              </Button>
-            </Grid>
-          </Grid>
           <Button
             type="submit"
             fullWidth
             variant="contained"
             color="primary"
             className={classes.submit}
-            onClick={click}
           >
-            Generate Temporary Password
+            Send Temporary Password
+            {submitLoading && 
+              <CircularProgress size={24} className={classes.circularProgress} />}
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link to="/sign-in" variant="body2">
+              <Link to="/sign-in">
                 Sign In
               </Link>
             </Grid>
             <Grid item>
-              <Link to="/sign-up" variant="body2">
-                Sign Up
+              <Link to="/sign-up">
+                Sign Up 
               </Link>
             </Grid>
           </Grid>
         </form>
       </div>
-      <Box mt={6}>
+      <Box mt={8}>
         <Copyright />
       </Box>
     </Container>

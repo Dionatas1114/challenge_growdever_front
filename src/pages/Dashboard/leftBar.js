@@ -16,7 +16,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 
 import CustomTip from '../../components/utils/customTooltip';
 
-export const mainListItems = (
+export const firstListItems = (
   <div>
     <CustomTip title="Home" placement="right">
       <ListItem button to="/" component={Link}>
@@ -61,7 +61,7 @@ export const mainListItems = (
   </div>
 );
 
-export const secondaryListItems = (
+export const secondListItems = (
   <div>
     <CustomTip title="To-Do" placement="right">
       <ListItem button to="/to-do" component={Link}>
@@ -90,7 +90,7 @@ export const secondaryListItems = (
   </div>
 );
 
-export const configListItems = (
+export const thirdListItems = (
   <div>
   <CustomTip title="Payment" placement="right">
       <ListItem button to="/payment" component={Link}>

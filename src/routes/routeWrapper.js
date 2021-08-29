@@ -3,7 +3,6 @@ import { Route, Redirect } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import propTypes from 'prop-types';
 
-// TODO: upgrade to latest eslint tooling
 export default function RouteWrapper({
   component: Component,
   isPrivate,
@@ -14,7 +13,7 @@ export default function RouteWrapper({
   const userType = userData?.user?.type;
   let signed = false;
   console.log(userType);
-  // 1 === admin;
+
   if (userData) {
     signed = true;
   }
@@ -23,12 +22,15 @@ export default function RouteWrapper({
     return <Redirect to="/sign-in" />;
   }
 
-  if (signed && !isPrivate) {
+  if (signed && !isPrivate && userType === true) {
     return <Redirect to="/" />;
   }
 
-  // eslint-disable jsx-props-no-spreading
-  return <Route {...rest} render={(props) => <Component {...props} />} />;
+  if (signed && !isPrivate && userType === true) {
+    return <Redirect to="/change-passw" />;
+  }
+
+  return <Route {...{rest}} render={(props) => <Component {...{props}} />} />;
 }
 
 RouteWrapper.propTypes = {
