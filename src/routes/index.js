@@ -13,11 +13,11 @@ export default function Routes() {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/" exact isPrivate component={Dash} />
         <Route path="/sign-in" exact component={SignIn} />
         <Route path="/sign-up" exact component={SignUp} />
-        <Route path="/change-passw" exact component={ChangePassw} />
         <Route path="/forgot" exact component={Forgot} />
+        <Route path="/" exact isPrivate component={Dash} />
+        <Route path="/change-passw" exact isPrivate component={ChangePassw} />
         <Route path="/settings" exact isPrivate component={Settings} />
       </Switch>
     </BrowserRouter>

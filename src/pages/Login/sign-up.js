@@ -218,13 +218,13 @@ export default function SignUp() {
           </Button>
           <Grid container>
             <Grid item xs>
-              <Link to="/forgot" variant="body2">
-                Forgot password?
+              <Link to="/sign-in">
+                Sign in
               </Link>
             </Grid>
             <Grid item>
-              <Link to="/sign-in" variant="body2">
-                Sign in
+              <Link to="/forgot">
+                Forgot password?
               </Link>
             </Grid>
           </Grid>

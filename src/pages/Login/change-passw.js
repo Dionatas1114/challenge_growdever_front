@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import {
   Avatar,
   Button,
@@ -12,16 +12,17 @@ import {
   Container,
   InputAdornment,
   IconButton,
+  CircularProgress
 } from '@material-ui/core';
 import { Autorenew, Visibility, VisibilityOff } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
+import { green } from '@material-ui/core/colors';
+import { useSnackbar } from 'notistack';
 
 import Copyright from '../../components/utils/copyright';
-// import SimpleBackdrop from '../../components/backdrop';
-// import Snacks from '../../components/snacks';
 
 import api from '../../services/api';
-// import * as userActions from '../../store/auth/actions';
+import * as userActions from '../../store/auth/actions';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -43,57 +44,75 @@ const useStyles = makeStyles((theme) => ({
   submit: {
     margin: theme.spacing(1, 0, 1),
   },
+  circularProgress: {
+    color: green[500],
+    position: 'absolute',
+  },
 }));
 
 export default function ChangePassw() {
   const classes = useStyles();
-  // const history = useHistory();
+  const {enqueueSnackbar} = useSnackbar();
+  const timer = useRef();
+  const dispatch = useDispatch();
 
-  const [email, setEmail] = useState('');
-  const [oldPassword, setOldPassword] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword1, setShowPassword1] = useState(false);
-  const [showPassword2, setShowPassword2] = useState(false);
-  // const [users, setUsers] = useState([]);
+  const [values, setValues] = useState({
+    email: '',
+    oldPassword: '',
+    password: '',
+    showOldPassword: false,
+    showPassword: false,
+  });
+  
+  const [submitLoading, setSubmitLoading] = useState(false);
 
-  // function handleSuccessChangePasswMessage() {
-  //   alert('ok!');
-  // }
+  const handleChange = (prop) => (event) => {
+    setValues({ ...values, [prop]: event.target.value });
+  };
+
+  const handleChangeBoolean = (prop) => () => {
+    setValues({ ...values, [prop]: !values[prop] });
+  };
+
+  function logout() {
+    dispatch(userActions.logout());
+  } 
 
   const userData = useSelector((state) => state?.auth);
 
-  // const dispatch = useDispatch();
-
-  // const toSignIn = () => history.push('/sign-in');
-
   async function handleChangePassw(e) {
-    // if (fullNamevalid) {
     e.preventDefault();
     try {
-      const userUid = userData.user.uid;
-      console.log(`${userUid}, uid`);
-      await api
+      if (!submitLoading) {
+        setSubmitLoading(true);
+        timer.current = window.setTimeout(() => {
+          setSubmitLoading(false);
+        }, 2000);
+      }
+
+      const { uid, name, type } = userData.user;
+      const { email, oldPassword, password } = values;
+
+      const res = await api
         .put(
-          `/users/${userUid}`,
+          `/users/${uid}`,
           {
+            name,
             email,
+            type,
             oldPassword,
             password,
+          },
+          {
+            headers: { Authorization: `Bearer ${userData.token}`},
           }
-          // {
-          //   headers: { Authorization: `Bearer ${userData.token}` },
-          // }
-        )
-        .then((res) => {
-          return console.log(res.data);
-        });
-      // .catch((error) => alert(error.res?.data?.message));
-    } catch (userUid) {
-      console.log(`${userUid}, uid`);
+        );
+
+        enqueueSnackbar(res.data.message, {variant: 'success'});
+      logout();
+    } catch (error) {
+      enqueueSnackbar('Por favor, confira os dados inseridos e tente novamente.', {variant: 'warning'});
     }
-    setEmail('');
-    setOldPassword('');
-    setPassword('');
   }
 
   return (
@@ -117,8 +136,8 @@ export default function ChangePassw() {
             autoComplete="email"
             autoFocus
             id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={values.email}
+            onChange={handleChange('email')}
           />
           <TextField
             variant="outlined"
@@ -127,23 +146,23 @@ export default function ChangePassw() {
             fullWidth
             name="password"
             label="Old Password"
-            type={showPassword1 ? 'text' : 'password'}
+            type={values.showOldPassword ? 'text' : 'password'}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => setShowPassword1((e) => !e)}
+                    onClick={handleChangeBoolean('showOldPassword')}
                   >
-                    {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                    {values.showOldPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               ),
             }}
             id="oldPassword"
-            value={oldPassword}
-            onChange={(e) => setOldPassword(e.target.value)}
-            // autoComplete="current-password"
+            value={values.oldPassword}
+            onChange={handleChange('oldPassword')}
+            autoComplete="current-password"
           />
           <TextField
             variant="outlined"
@@ -152,23 +171,22 @@ export default function ChangePassw() {
             fullWidth
             name="password"
             label="New Password"
-            type={showPassword2 ? 'text' : 'password'}
+            type={values.showPassword ? 'text' : 'password'}
             InputProps={{
               endAdornment: (
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => setShowPassword2((e) => !e)}
+                    onClick={handleChangeBoolean('showPassword')}
                   >
-                    {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                    {values.showPassword ? <VisibilityOff /> : <Visibility />}
                   </IconButton>
                 </InputAdornment>
               ),
             }}
             id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            // autoComplete="current-password"
+            value={values.password}
+            onChange={handleChange('password')}
           />
           <Button
             type="submit"
@@ -178,20 +196,18 @@ export default function ChangePassw() {
             className={classes.submit}
           >
             Change
+            {submitLoading && 
+                <CircularProgress size={24} className={classes.circularProgress} />}
           </Button>
-          {/* <SimpleBackdrop />
-          <Snacks /> */}
-          <Grid container>
-            <Grid item xs>
-              <Link to="/sign-in" variant="body2">
-                Sign In
-              </Link>
-            </Grid>
-            <Grid item>
-              <Link to="/sign-up" variant="body2">
-                Sign Up
-              </Link>
-            </Grid>
+          <Grid
+            container
+            direction="row"
+            justifyContent="flex-end"
+            alignItems="center"
+          >
+            <Link to="/">
+              Back to Dashboard
+            </Link>
           </Grid>
         </form>
       </div>
