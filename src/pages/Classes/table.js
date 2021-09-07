@@ -1,5 +1,6 @@
 import React, {useState, useEffect} from 'react';
 import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
 import clsx from 'clsx';
 import { lighten, makeStyles } from '@material-ui/core/styles';
 import {
@@ -210,10 +211,15 @@ export default function EnhancedTable() {
   const [dense, setDense] = useState(false);
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
+  const userData = useSelector((state) => state?.auth);
+
   useEffect(() => {
     const fetchData = async () => {
-      api.get('/classes')
-        .then(response => setRows(response.data.data.classes));
+      api.get('/classes', 
+        {
+          headers: { Authorization: `Bearer ${userData.token}`},
+        }
+      ).then(response => setRows(response.data.data.classes));
     };
     
     const timer = setTimeout(() => {
