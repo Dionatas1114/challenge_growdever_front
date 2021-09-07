@@ -18,13 +18,15 @@ import { ChevronLeft, MoreVert, ExitToApp } from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import clsx from 'clsx';
 
-import CustomTip from '../../components/utils/customTooltip';
+import CustomTooltip from '../../components/utils/customTooltip';
 import ProfileIcon from '../../components/utils/profileIcons';
 
 import * as userActions from '../../store/auth/actions';
 
 import { firstListItems, secondListItems, thirdListItems } from './leftBar';
-import Home from '../Home';
+// import Home from '../Home';
+import Classes from '../Classes';
+// import Settings from '../Settings';
 // import Image from '../../assets/images/universityBack.jpg';
 
 const drawerWidth = 240;
@@ -180,8 +182,8 @@ export default function Dashboard() {
         open={openProfileMenu}
         onClose={handleCloseProfileMenu}
       >
+        <MenuItem onClick={handleCloseProfileMenu}>View Profile</MenuItem>
         <MenuItem to='/change-passw' component={Link}>Change Password</MenuItem>
-        <MenuItem onClick={handleCloseProfileMenu}>Profile</MenuItem>
       </Menu>
     </div>
   );
@@ -207,9 +209,9 @@ export default function Dashboard() {
           {profileIconButton}
       </MenuItem>
       <MenuItem>
-        <CustomTip title="Logout" placement="left">
+        <CustomTooltip title="Logout" placement="left">
           {logoutIconButton}
-        </CustomTip>
+        </CustomTooltip>
       </MenuItem>
     </Menu>
   );
@@ -242,12 +244,12 @@ export default function Dashboard() {
           </Typography>
           <div className={classes.grow} />
           <div className={classes.sectionDesktop}>
-            <CustomTip title="Profile" placement="bottom">
+            <CustomTooltip title="Profile" placement="bottom">
               {profileIconButton}
-            </CustomTip>
-            <CustomTip title="Logout" placement="bottom">
+            </CustomTooltip>
+            <CustomTooltip title="Logout" placement="bottom">
               {logoutIconButton}
-            </CustomTip>
+            </CustomTooltip>
           </div>
           <div className={classes.sectionMobile}>
             <IconButton
@@ -283,7 +285,9 @@ export default function Dashboard() {
         <Divider />
         <List>{thirdListItems}</List>
       </Drawer>
-      <Home />
+      <Classes />
+      {/* <Settings /> */}
+      {/* <Home /> */}
     </div>
   );
 }
