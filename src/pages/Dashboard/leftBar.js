@@ -14,107 +14,107 @@ import CreditCardRoundedIcon from '@material-ui/icons/CreditCardRounded';
 import PhoneCallbackIcon from '@material-ui/icons/PhoneCallback';
 import SettingsIcon from '@material-ui/icons/Settings';
 
-import CustomTip from '../../components/utils/customTooltip';
+import CustomTooltip from '../../components/utils/customTooltip';
 
 export const firstListItems = (
   <div>
-    <CustomTip title="Home" placement="right">
+    <CustomTooltip title="Home" placement="right">
       <ListItem button to="/" component={Link}>
         <ListItemIcon>
           <AccountBalanceIcon />
         </ListItemIcon>
         <ListItemText primary="Home" />
       </ListItem>
-    </CustomTip>
-    <CustomTip title="Student Registration" placement="right">
-      <ListItem button to="/student-registration" component={Link}>
+    </CustomTooltip>
+    <CustomTooltip title="Student Registration" placement="right">
+      <ListItem button to="/student-regist" component={Link}>
         <ListItemIcon>
           <PersonAddIcon />
         </ListItemIcon>
         <ListItemText primary="Student Registration" />
       </ListItem>
-    </CustomTip>
-    <CustomTip title="Classes" placement="right">
+    </CustomTooltip>
+    <CustomTooltip title="Classes" placement="right">
       <ListItem button to="/classes" component={Link}>
         <ListItemIcon>
           <ClassIcon />
         </ListItemIcon>
         <ListItemText primary="Classes" />
       </ListItem>
-    </CustomTip>
-    <CustomTip title="Reserved Classes" placement="right">
+    </CustomTooltip>
+    <CustomTooltip title="Reserved Classes" placement="right">
       <ListItem button to="/reserved-classes" component={Link}>
         <ListItemIcon>
           <AssignmentTurnedInIcon />
         </ListItemIcon>
         <ListItemText primary="Reserved Classes" />
       </ListItem>
-    </CustomTip>
-    <CustomTip title="Certificate" placement="right">
+    </CustomTooltip>
+    <CustomTooltip title="Certificate" placement="right">
       <ListItem button to="/certificate" component={Link}>
         <ListItemIcon>
           <SchoolIcon />
         </ListItemIcon>
         <ListItemText primary="Certificate" />
       </ListItem>
-    </CustomTip>
+    </CustomTooltip>
   </div>
 );
 
 export const secondListItems = (
   <div>
-    <CustomTip title="To-Do" placement="right">
+    <CustomTooltip title="To-Do" placement="right">
       <ListItem button to="/to-do" component={Link}>
         <ListItemIcon>
           <AssignmentIcon />
         </ListItemIcon>
         <ListItemText primary="To-Do" />
       </ListItem>
-    </CustomTip>
-    <CustomTip title="Calendar" placement="right">
+    </CustomTooltip>
+    <CustomTooltip title="Calendar" placement="right">
       <ListItem button to="/calendar" component={Link}>
         <ListItemIcon>
           <EventIcon />
         </ListItemIcon>
         <ListItemText primary="Calendar" />
       </ListItem>
-    </CustomTip>
-    <CustomTip title="Library" placement="right">
+    </CustomTooltip>
+    <CustomTooltip title="Library" placement="right">
       <ListItem button to="/library" component={Link}>
         <ListItemIcon>
           <LocalLibraryIcon />
         </ListItemIcon>
         <ListItemText primary="Library" />
       </ListItem>
-    </CustomTip>
+    </CustomTooltip>
   </div>
 );
 
 export const thirdListItems = (
   <div>
-  <CustomTip title="Payment" placement="right">
+  <CustomTooltip title="Payment" placement="right">
       <ListItem button to="/payment" component={Link}>
         <ListItemIcon>
           <CreditCardRoundedIcon />
         </ListItemIcon>
         <ListItemText primary="Payment" />
       </ListItem>
-    </CustomTip>
-    <CustomTip title="Contact us" placement="right">
+    </CustomTooltip>
+    <CustomTooltip title="Contact us" placement="right">
       <ListItem button to="/contact-us" component={Link}>
         <ListItemIcon>
           <PhoneCallbackIcon />
         </ListItemIcon>
         <ListItemText primary="Contact us" />
       </ListItem>
-    </CustomTip>
-    <CustomTip title="Settings" placement="right">
+    </CustomTooltip>
+    <CustomTooltip title="Settings" placement="right">
       <ListItem button to="/settings" component={Link}>
         <ListItemIcon>
           <SettingsIcon />
         </ListItemIcon>
         <ListItemText primary="Settings" />
       </ListItem>
-    </CustomTip>
+    </CustomTooltip>
   </div>
 );
