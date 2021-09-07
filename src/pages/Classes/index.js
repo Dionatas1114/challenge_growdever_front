@@ -5,7 +5,8 @@ import { Box, Container, Grid, Paper } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 // import Carousel from './carousel';
-// import Copyright from '../../components/utils/copyright';
+import EnhancedTable from './table';
+import Copyright from '../../components/utils/copyright';
 
 const useStyles = makeStyles((theme) => ({
   content: {
@@ -37,20 +38,16 @@ export default function Settings() {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <Grid container spacing={3}>
-            {/* Carousel */}
-            <Grid item xs={12} md={8} lg={9}>
-              <Paper className={classes.paper}>{/* <Carousel /> */}</Paper>
-            </Grid>
-            {/* Recent Deposits */}
-            <Grid item xs={12} md={4} lg={3}>
-              <Paper className={classes.paper}>{/* <Carousel /> */}</Paper>
-            </Grid>
-            {/* Recent Orders */}
+            {/* Classes */}
             <Grid item xs={12}>
-              <Paper className={classes.paper}>{/* <Orders /> */}</Paper>
+              <Paper className={classes.paper}>
+                <EnhancedTable />
+              </Paper>
             </Grid>
           </Grid>
-          <Box pt={4}>{/* <Copyright /> */}</Box>
+          <Box pt={4}>
+            <Copyright />
+          </Box>
         </Container>
       </main>
   );

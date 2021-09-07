@@ -26,10 +26,6 @@ export default function RouteWrapper({
     return <Redirect to="/" />;
   }
 
-  if (signed && !isPrivate && userType === true) {
-    return <Redirect to="/change-passw" />;
-  }
-
   return <Route {...{rest}} render={(props) => <Component {...{props}} />} />;
 }
 
